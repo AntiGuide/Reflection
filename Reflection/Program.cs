@@ -42,6 +42,10 @@ namespace Reflection {
 
             var properties = type.GetProperties();
             foreach (var pro in properties) {
+                if (pro.CustomAttributes.Where((c) => c.AttributeType == typeof(HideMyPropertyAttribute)).Any()) {
+                    continue;
+                }
+
                 OutputDepth(pro.Name, depth);
 
                 if (pro.PropertyType.IsArray) {
@@ -67,7 +71,12 @@ namespace Reflection {
     public class MyClass {
         private int value = 42;
         public string Name { get; set; } = "test";
-        public bool Bool => true;
+        [HideMyProperty] public bool Bool => true;
         public int Value { set { this.value = value; } }
+    }
+
+    [System.AttributeUsage(System.AttributeTargets.Property)]
+    public class HideMyPropertyAttribute : Attribute {
+
     }
 }
