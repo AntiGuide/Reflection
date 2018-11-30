@@ -31,6 +31,15 @@ namespace Reflection {
             }
 
             var type = p.GetType();
+            var fields = type.GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
+            foreach (var field in fields) {
+                if (field.IsInitOnly || field.Name.Contains("BackingField")) {
+                    continue;
+                }
+
+                OutputDepth(field.Name, depth);
+            }
+
             var properties = type.GetProperties();
             foreach (var pro in properties) {
                 OutputDepth(pro.Name, depth);
